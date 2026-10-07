@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Staff Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Staff Dashboard</h1>
+    <p>Update Canteen Queue Information</p>
+</header>
+
+<div class="form-container">
+
+    <label>Select Canteen</label>
+
+    <select id="staffCanteen">
+        <option value="C001">Main Canteen</option>
+        <option value="C002">North Canteen</option>
+        <option value="C003">Food Court</option>
+    </select>
+
+    <label>Current Number of People</label>
+    <input type="number" id="people" min="0" placeholder="Enter queue count">
+
+    <label>Number of Counters</label>
+    <input type="number" id="counters" min="1" placeholder="Enter number of counters">
+
+    <button onclick="updateQueue()">Update Queue</button>
+
+    <p id="staffMessage"></p>
+
+    <br>
+
+    <a href="index.html" class="back">Back to Home</a>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

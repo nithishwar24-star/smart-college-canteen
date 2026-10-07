@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Admin Dashboard</h1>
+    <p>Smart Canteen Monitoring</p>
+</header>
+
+<div class="container">
+
+    <div class="dashboard">
+
+    <div class="card">
+        <h3>Total Canteens</h3>
+        <p>3</p>
+    </div>
+
+    <div class="card">
+        <h3>Total People</h3>
+        <p id="totalPeople">--</p>
+        <span>People</span>
+    </div>
+
+    <div class="card">
+        <h3>Highest Queue</h3>
+        <p id="highestQueue">--</p>
+        <span>People</span>
+    </div>
+
+    <div class="card">
+        <h3>Busiest Canteen</h3>
+        <p id="busiestCanteen" class="small-text">--</p>
+    </div>
+
+    <div class="card">
+        <h3>Average Waiting</h3>
+        <p id="averageWaiting">--</p>
+        <span>Minutes</span>
+    </div>
+
+    <div class="card">
+        <h3>Peak Time</h3>
+        <p class="small-text">12:30 PM</p>
+    </div>
+
+</div>
+    <h2>Canteen Status</h2>
+
+    <table>
+        <tr>
+            <th>Canteen</th>
+            <th>Queue</th>
+            <th>Waiting Time</th>
+            <th>Crowd</th>
+            <th>Prediction</th>
+        </tr>
+
+        <tr>
+            <td>Main Canteen</td>
+            <td id="queueC001">--</td>
+            <td id="waitingC001">--</td>
+            <td id="crowdC001">--</td>
+            <td id="predictionC001">--</td>
+        </tr>
+
+        <tr>
+            <td>North Canteen</td>
+            <td id="queueC002">--</td>
+            <td id="waitingC002">--</td>
+            <td id="crowdC002">--</td>
+            <td id="predictionC002">--</td>
+        </tr>
+
+        <tr>
+            <td>Food Court</td>
+            <td id="queueC003">--</td>
+            <td id="waitingC003">--</td>
+            <td id="crowdC003">--</td>
+            <td id="predictionC003">--</td>
+        </tr>
+
+    </table>
+
+    <br><br>
+
+    <p id="adminMessage"></p>
+
+    <a href="index.html" class="back">Back to Home</a>
+
+</div>
+
+<script>
+
+const API_URL = "https://3i1coc4qp5.execute-api.us-east-1.amazonaws.com/prod/queue";
+
+async function getAdminData() {
+
+    let canteens = ["C001", "C002", "C003"];
+
+    let totalWaiting = 0;
+    let validWaiting = 0;
+    let totalPeople = 0;
+let highestQueue = 0;
+let busiestCanteen = "--";
+
+    for (let canteen of canteens) {
+
+        try {
+
+            let response = await fetch(
+                API_URL + "?canteenId=" + canteen
+            );
+
+            let data = await response.json();
+
+            if (!response.ok) {
+                continue;
+            }
+
+            let queue = Number(data.people);
+            totalPeople += queue;
+
+if (queue > highestQueue) {
+    highestQueue = queue;
+    busiestCanteen =
+        canteen === "C001" ? "Main Canteen" :
+        canteen === "C002" ? "North Canteen" :
+        "Food Court";
+}
+            let waiting = Number(data.waitingTime);
+            let crowd = data.crowdLevel;
+
+            let prediction;
+
+            if (queue <= 10) {
+                prediction = "LOW";
+            }
+            else if (queue <= 25) {
+                prediction = "MEDIUM";
+            }
+            else if (queue <= 50) {
+                prediction = "HIGH";
+            }
+            else {
+                prediction = "VERY HIGH";
+            }
+
+            let hour = new Date().getHours();
+
+            if ((hour >= 12 && hour < 14) ||
+                (hour >= 19 && hour < 21)) {
+
+                if (prediction === "LOW") {
+                    prediction = "MEDIUM";
+                }
+                else if (prediction === "MEDIUM") {
+                    prediction = "HIGH";
+                }
+                else if (prediction === "HIGH") {
+                    prediction = "VERY HIGH";
+                }
+            }
+
+            document.getElementById("queue" + canteen).innerHTML =
+                queue;
+
+            document.getElementById("waiting" + canteen).innerHTML =
+                waiting;
+
+            document.getElementById("crowd" + canteen).innerHTML =
+                crowd;
+
+            document.getElementById("prediction" + canteen).innerHTML =
+                prediction;
+
+            document.getElementById("totalPeople").innerHTML =
+    totalPeople;
+
+document.getElementById("highestQueue").innerHTML =
+    highestQueue;
+
+document.getElementById("busiestCanteen").innerHTML =
+    busiestCanteen;
+
+            totalWaiting += waiting;
+            validWaiting++;
+
+        }
+        catch (error) {
+
+            console.error(
+                "Error loading " + canteen,
+                error
+            );
+
+        }
+    }
+
+    if (validWaiting > 0) {
+
+        let average = totalWaiting / validWaiting;
+
+        document.getElementById("averageWaiting").innerHTML =
+            average.toFixed(2);
+
+    }
+}
+
+getAdminData();
+
+setInterval(getAdminData, 5000);
+
+</script>
+
+</body>
+</html>

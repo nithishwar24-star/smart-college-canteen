@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Student Dashboard</h1>
+    <p>Smart Canteen Queue Predictor</p>
+</header>
+
+<div class="container">
+
+    <label>Select Canteen</label>
+
+    <select id="canteen">
+        <option value="C001">Main Canteen</option>
+        <option value="C002">North Canteen</option>
+        <option value="C003">Food Court</option>
+    </select>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h3>Current Queue</h3>
+            <p id="queue">--</p>
+            <span>People</span>
+        </div>
+
+        <div class="card">
+            <h3>Waiting Time</h3>
+            <p id="waiting">--</p>
+            <span>Minutes</span>
+        </div>
+
+        <div class="card">
+            <h3>Crowd Level</h3>
+            <p id="crowd">--</p>
+        </div>
+
+        <div class="card">
+            <h3>Predicted Crowd</h3>
+            <p id="prediction">--</p>
+        </div>
+
+    </div>
+
+    <div class="weather">
+        <h2>Weather</h2>
+        <p id="weather">--</p>
+        <p id="temperature">--</p>
+    </div>
+
+    <button onclick="getQueue()">Refresh Status</button>
+
+    <br><br>
+
+    <a href="index.html" class="back">Back to Home</a>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
